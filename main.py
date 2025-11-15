@@ -20,7 +20,7 @@ load_dotenv()
 # Configuration
 COLLECTION_NAME = "maug"
 EMBEDDING_MODEL = "text-embedding-3-small"
-LLM_MODEL = "gpt-4o-mini"
+LLM_MODEL = "gpt-4o"  # En yeni ve güçlü model
 
 # Initialize FastAPI
 app = FastAPI(
