@@ -11,6 +11,7 @@ qdrant-client==1.7.3
 
 # PDF & Text Processing
 pypdf==4.0.1
+PyMuPDF==1.23.8  # fitz - better text extraction for MAUG
 tiktoken==0.5.2
 
 # Utilities
