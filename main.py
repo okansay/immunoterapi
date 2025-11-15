@@ -18,7 +18,7 @@ from qdrant_client import QdrantClient
 load_dotenv()
 
 # Configuration
-COLLECTION_NAME = "immunotherapy"
+COLLECTION_NAME = "maug"
 EMBEDDING_MODEL = "text-embedding-3-small"
 LLM_MODEL = "gpt-4o-mini"
 
