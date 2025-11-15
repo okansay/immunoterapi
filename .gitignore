@@ -45,7 +45,6 @@ data/*.docx
 
 # MAUG outputs
 *.jsonl
-maug_config.py
 
 # Qdrant storage
 qdrant_storage/

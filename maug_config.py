@@ -1,0 +1,400 @@
+#!/usr/bin/env python3
+"""
+MAUG PDF Chunk Mapping
+Her chunk'ın sayfa aralığı ve metadata bilgisi
+"""
+
+MAUG_CHUNKS = [
+    {
+        "chunk_id": "FRONT_MATTER",
+        "section": "FRONT",
+        "code": None,
+        "title": "Front matter (cover, sponsors, list of authors, table of contents)",
+        "start_page": 1,
+        "end_page": 14
+    },
+    {
+        "chunk_id": "PREFACE_1",
+        "section": "PREFACE",
+        "code": None,
+        "title": "Preface from the EAACI president",
+        "start_page": 15,
+        "end_page": 16
+    },
+    {
+        "chunk_id": "PREFACE_2",
+        "section": "PREFACE",
+        "code": None,
+        "title": "Preface from the chair of the first EAACI task force on molecular allergy diagnostics",
+        "start_page": 17,
+        "end_page": 18
+    },
+    {
+        "chunk_id": "A01",
+        "section": "A",
+        "code": "A01",
+        "title": "Molecular allergology coming of age - an introduction to the second edition of the EAACI User's Guide (MAUG 2.0)",
+        "start_page": 19,
+        "end_page": 22
+    },
+    {
+        "chunk_id": "A02",
+        "section": "A",
+        "code": "A02",
+        "title": "Allergens and the allergenic composition of source materials",
+        "start_page": 23,
+        "end_page": 34
+    },
+    {
+        "chunk_id": "A03",
+        "section": "A",
+        "code": "A03",
+        "title": "Molecular allergy diagnostics in clinical practice",
+        "start_page": 35,
+        "end_page": 52
+    },
+    {
+        "chunk_id": "A04",
+        "section": "A",
+        "code": "A04",
+        "title": "Methods for IgE antibody testing: Singleplex and multiplex immunoassays",
+        "start_page": 53,
+        "end_page": 72
+    },
+    {
+        "chunk_id": "A05",
+        "section": "A",
+        "code": "A05",
+        "title": "Basophil activation test",
+        "start_page": 73,
+        "end_page": 90
+    },
+    {
+        "chunk_id": "A06",
+        "section": "A",
+        "code": "A06",
+        "title": "In vivo testing",
+        "start_page": 91,
+        "end_page": 99
+    },
+    {
+        "chunk_id": "A07",
+        "section": "A",
+        "code": "A07",
+        "title": "Basic and theoretical aspects of allergens",
+        "start_page": 100,
+        "end_page": 106
+    },
+    {
+        "chunk_id": "A08",
+        "section": "A",
+        "code": "A08",
+        "title": "Allergen families and databases",
+        "start_page": 107,
+        "end_page": 122
+    },
+    {
+        "chunk_id": "A09",
+        "section": "A",
+        "code": "A09",
+        "title": "Immunotherapy and molecular allergy approaches",
+        "start_page": 123,
+        "end_page": 136
+    },
+    {
+        "chunk_id": "A10",
+        "section": "A",
+        "code": "A10",
+        "title": "Cross-reactive carbohydrate determinants",
+        "start_page": 137,
+        "end_page": 146
+    },
+    {
+        "chunk_id": "A11",
+        "section": "A",
+        "code": "A11",
+        "title": "Small molecules as immunomodulators and allergen ligands",
+        "start_page": 147,
+        "end_page": 156
+    },
+    {
+        "chunk_id": "A12",
+        "section": "A",
+        "code": "A12",
+        "title": "Molecular exposure: Systematic approaches, clinical significance, and harmonisation",
+        "start_page": 157,
+        "end_page": 170
+    },
+    {
+        "chunk_id": "B01",
+        "section": "B",
+        "code": "B01",
+        "title": "Tree pollen allergy",
+        "start_page": 171,
+        "end_page": 188
+    },
+    {
+        "chunk_id": "B02",
+        "section": "B",
+        "code": "B02",
+        "title": "Grass pollen allergy",
+        "start_page": 189,
+        "end_page": 200
+    },
+    {
+        "chunk_id": "B03",
+        "section": "B",
+        "code": "B03",
+        "title": "Weed pollen allergy",
+        "start_page": 201,
+        "end_page": 214
+    },
+    {
+        "chunk_id": "B04",
+        "section": "B",
+        "code": "B04",
+        "title": "Dust mite allergy",
+        "start_page": 215,
+        "end_page": 228
+    },
+    {
+        "chunk_id": "B05",
+        "section": "B",
+        "code": "B05",
+        "title": "Cockroach allergy",
+        "start_page": 229,
+        "end_page": 240
+    },
+    {
+        "chunk_id": "B06",
+        "section": "B",
+        "code": "B06",
+        "title": "Furry animals",
+        "start_page": 241,
+        "end_page": 252
+    },
+    {
+        "chunk_id": "B07",
+        "section": "B",
+        "code": "B07",
+        "title": "Allergy to moulds",
+        "start_page": 253,
+        "end_page": 264
+    },
+    {
+        "chunk_id": "B08",
+        "section": "B",
+        "code": "B08",
+        "title": "Microbial allergens / antigens",
+        "start_page": 265,
+        "end_page": 274
+    },
+    {
+        "chunk_id": "B09",
+        "section": "B",
+        "code": "B09",
+        "title": "Edible insects",
+        "start_page": 275,
+        "end_page": 286
+    },
+    {
+        "chunk_id": "B10",
+        "section": "B",
+        "code": "B10",
+        "title": "Cow's milk allergy",
+        "start_page": 287,
+        "end_page": 296
+    },
+    {
+        "chunk_id": "B11",
+        "section": "B",
+        "code": "B11",
+        "title": "Allergy to egg",
+        "start_page": 297,
+        "end_page": 302
+    },
+    {
+        "chunk_id": "B12",
+        "section": "B",
+        "code": "B12",
+        "title": "Allergy to fish and Anisakis simplex",
+        "start_page": 303,
+        "end_page": 316
+    },
+    {
+        "chunk_id": "B13",
+        "section": "B",
+        "code": "B13",
+        "title": "Allergy to crustacean and molluscs",
+        "start_page": 317,
+        "end_page": 334
+    },
+    {
+        "chunk_id": "B14",
+        "section": "B",
+        "code": "B14",
+        "title": "Allergy to mammalian meat",
+        "start_page": 335,
+        "end_page": 342
+    },
+    {
+        "chunk_id": "B15",
+        "section": "B",
+        "code": "B15",
+        "title": "Fruit and vegetable allergy",
+        "start_page": 343,
+        "end_page": 358
+    },
+    {
+        "chunk_id": "B16",
+        "section": "B",
+        "code": "B16",
+        "title": "Wheat and buckwheat allergies",
+        "start_page": 359,
+        "end_page": 374
+    },
+    {
+        "chunk_id": "B17",
+        "section": "B",
+        "code": "B17",
+        "title": "Soy allergy",
+        "start_page": 375,
+        "end_page": 384
+    },
+    {
+        "chunk_id": "B18",
+        "section": "B",
+        "code": "B18",
+        "title": "Peanut allergy",
+        "start_page": 385,
+        "end_page": 394
+    },
+    {
+        "chunk_id": "B19",
+        "section": "B",
+        "code": "B19",
+        "title": "Tree nut and seed allergy",
+        "start_page": 395,
+        "end_page": 406
+    },
+    {
+        "chunk_id": "B20",
+        "section": "B",
+        "code": "B20",
+        "title": "Bee venom allergy",
+        "start_page": 407,
+        "end_page": 418
+    },
+    {
+        "chunk_id": "B21",
+        "section": "B",
+        "code": "B21",
+        "title": "Vespid allergy",
+        "start_page": 419,
+        "end_page": 434
+    },
+    {
+        "chunk_id": "B22",
+        "section": "B",
+        "code": "B22",
+        "title": "Occupational allergy",
+        "start_page": 435,
+        "end_page": 452
+    },
+    {
+        "chunk_id": "C01",
+        "section": "C",
+        "code": "C01",
+        "title": "Profilins",
+        "start_page": 453,
+        "end_page": 460
+    },
+    {
+        "chunk_id": "C02",
+        "section": "C",
+        "code": "C02",
+        "title": "PR-10-like allergens",
+        "start_page": 461,
+        "end_page": 474
+    },
+    {
+        "chunk_id": "C03",
+        "section": "C",
+        "code": "C03",
+        "title": "Non-specific lipid transfer proteins (nsLTPs)",
+        "start_page": 475,
+        "end_page": 486
+    },
+    {
+        "chunk_id": "C04",
+        "section": "C",
+        "code": "C04",
+        "title": "Serum albumins",
+        "start_page": 487,
+        "end_page": 496
+    },
+    {
+        "chunk_id": "C05",
+        "section": "C",
+        "code": "C05",
+        "title": "Tropomyosins",
+        "start_page": 497,
+        "end_page": 506
+    },
+    {
+        "chunk_id": "C06",
+        "section": "C",
+        "code": "C06",
+        "title": "Polcalcins",
+        "start_page": 507,
+        "end_page": 512
+    },
+    {
+        "chunk_id": "C07",
+        "section": "C",
+        "code": "C07",
+        "title": "Lipocalins",
+        "start_page": 513,
+        "end_page": 522
+    },
+    {
+        "chunk_id": "C08",
+        "section": "C",
+        "code": "C08",
+        "title": "Seed storage proteins",
+        "start_page": 523,
+        "end_page": 536
+    },
+    {
+        "chunk_id": "C09",
+        "section": "C",
+        "code": "C09",
+        "title": "Gibberellin-regulated proteins",
+        "start_page": 537,
+        "end_page": 546
+    },
+    {
+        "chunk_id": "C10",
+        "section": "C",
+        "code": "C10",
+        "title": "Oleosins",
+        "start_page": 547,
+        "end_page": 552
+    },
+    {
+        "chunk_id": "C11",
+        "section": "C",
+        "code": "C11",
+        "title": "Parvalbumins",
+        "start_page": 553,
+        "end_page": 564
+    },
+    {
+        "chunk_id": "D01",
+        "section": "D",
+        "code": "D01",
+        "title": "Important allergenic molecules and their characteristics",
+        "start_page": 565,
+        "end_page": 576
+    }
+]
