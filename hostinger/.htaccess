@@ -1,0 +1,195 @@
+# Apache Configuration for Immunotherapy Decision Support System
+# .htaccess file for Hostinger
+
+# =====================================
+# 1. SECURITY SETTINGS
+# =====================================
+
+# Prevent directory browsing
+Options -Indexes
+
+# Disable server signature
+ServerSignature Off
+
+# Protect sensitive files
+<FilesMatch "^(composer\\.json|composer\\.lock|package\\.json|\\.env|\\.git.*|README\\.md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Prevent access to log files (if you enable logging)
+<FilesMatch "\\.(log|bak|sql|md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Allow only specific file types to be accessed
+<FilesMatch "\\.(php|html|htm|css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# =====================================
+# 2. HTTPS REDIRECT (SSL)
+# =====================================
+
+# Uncomment below to force HTTPS (after SSL is configured)
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# =====================================
+# 3. COMPRESSION (Performance)
+# =====================================
+
+<IfModule mod_deflate.c>
+    # Compress HTML, CSS, JavaScript, Text, XML and fonts
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/woff
+    AddOutputFilterByType DEFLATE font/woff2
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# =====================================
+# 4. BROWSER CACHING
+# =====================================
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # Images
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+
+    # Fonts
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+
+    # HTML (no cache for dynamic content)
+    ExpiresByType text/html "access plus 0 seconds"
+
+    # Default
+    ExpiresDefault "access plus 1 month"
+</IfModule>
+
+# =====================================
+# 5. PHP SETTINGS
+# =====================================
+
+<IfModule mod_php7.c>
+    # Increase memory limit (if needed)
+    # php_value memory_limit 256M
+
+    # Increase max execution time for long queries
+    php_value max_execution_time 120
+
+    # Increase max input time
+    php_value max_input_time 120
+
+    # Increase post max size (for larger requests)
+    php_value post_max_size 10M
+
+    # Display errors (DISABLE in production!)
+    # php_flag display_errors Off
+    # php_flag display_startup_errors Off
+
+    # Log errors
+    php_flag log_errors On
+</IfModule>
+
+# =====================================
+# 6. URL REWRITING (Optional)
+# =====================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Remove .php extension (optional - for cleaner URLs)
+    # RewriteCond %{REQUEST_FILENAME} !-d
+    # RewriteCond %{REQUEST_FILENAME}\.php -f
+    # RewriteRule ^(.*)$ $1.php [L]
+
+    # Redirect www to non-www (or vice versa)
+    # Uncomment ONE of the following:
+
+    # Redirect www to non-www
+    # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    # RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+    # Redirect non-www to www
+    # RewriteCond %{HTTP_HOST} !^www\. [NC]
+    # RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [R=301,L]
+</IfModule>
+
+# =====================================
+# 7. SECURITY HEADERS
+# =====================================
+
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Enable XSS protection
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Referrer policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Content Security Policy (adjust as needed)
+    # Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+
+    # Remove X-Powered-By header
+    Header unset X-Powered-By
+</IfModule>
+
+# =====================================
+# 8. ERROR PAGES (Optional)
+# =====================================
+
+# Custom error pages (create these files if needed)
+# ErrorDocument 400 /error/400.html
+# ErrorDocument 401 /error/401.html
+# ErrorDocument 403 /error/403.html
+# ErrorDocument 404 /error/404.html
+# ErrorDocument 500 /error/500.html
+
+# =====================================
+# 9. CHARSET
+# =====================================
+
+AddDefaultCharset UTF-8
+
+# =====================================
+# 10. PREVENT HOTLINKING (Optional)
+# =====================================
+
+# Prevent hotlinking of images (bandwidth protection)
+# RewriteEngine On
+# RewriteCond %{HTTP_REFERER} !^$
+# RewriteCond %{HTTP_REFERER} !^https?://(www\.)?yourdomain\.com [NC]
+# RewriteRule \.(jpg|jpeg|png|gif|svg)$ - [F,L]
