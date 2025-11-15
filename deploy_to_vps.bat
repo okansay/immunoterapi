@@ -11,7 +11,7 @@ echo.
 
 REM Konfigürasyon
 set VPS_USER=root
-set VPS_HOST=your-vps-ip-or-hostname
+set VPS_HOST=173.212.248.71
 set VPS_PROJECT_DIR=/root/immunotherapy-api
 set BRANCH_NAME=claude/pdf-chunking-embedding-setup-01JLGFuzhLw2pe4uf2SSJbm8
 

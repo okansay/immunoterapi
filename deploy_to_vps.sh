@@ -11,7 +11,7 @@ echo ""
 
 # Konfigürasyon
 VPS_USER="root"
-VPS_HOST="your-vps-ip-or-hostname"  # BURAYA VPS IP/HOSTNAME GİRİN
+VPS_HOST="173.212.248.71"
 VPS_PROJECT_DIR="/root/immunotherapy-api"
 BRANCH_NAME="claude/pdf-chunking-embedding-setup-01JLGFuzhLw2pe4uf2SSJbm8"
 

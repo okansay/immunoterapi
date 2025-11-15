@@ -21,14 +21,7 @@ Mevcut VPS dosyalarını bozmadan sadece yeni MAUG chunking dosyalarını ekleme
 
 #### Linux/Mac:
 
-1. **VPS bilgilerini düzenleyin:**
-   ```bash
-   nano deploy_to_vps.sh
-   # VPS_HOST='your-vps-ip-or-hostname' satırını düzenleyin
-   # Örnek: VPS_HOST='185.123.45.67'
-   ```
-
-2. **Script'i çalıştırın:**
+1. **Script'i doğrudan çalıştırın (IP zaten ayarlanmış: 173.212.248.71):**
    ```bash
    chmod +x deploy_to_vps.sh
    ./deploy_to_vps.sh
@@ -36,14 +29,7 @@ Mevcut VPS dosyalarını bozmadan sadece yeni MAUG chunking dosyalarını ekleme
 
 #### Windows:
 
-1. **VPS bilgilerini düzenleyin:**
-   ```batch
-   notepad deploy_to_vps.bat
-   REM set VPS_HOST=your-vps-ip-or-hostname satırını düzenleyin
-   REM Örnek: set VPS_HOST=185.123.45.67
-   ```
-
-2. **Script'i çalıştırın:**
+1. **Script'i doğrudan çalıştırın (IP zaten ayarlanmış: 173.212.248.71):**
    ```batch
    deploy_to_vps.bat
    ```
@@ -52,7 +38,7 @@ Mevcut VPS dosyalarını bozmadan sadece yeni MAUG chunking dosyalarını ekleme
 
 1. **VPS'ye SSH ile bağlanın:**
    ```bash
-   ssh root@your-vps-ip
+   ssh root@173.212.248.71
    ```
 
 2. **Proje dizinine gidin:**
@@ -72,7 +58,7 @@ Mevcut VPS dosyalarını bozmadan sadece yeni MAUG chunking dosyalarını ekleme
 
 1. **VPS'ye SSH ile bağlanın:**
    ```bash
-   ssh root@your-vps-ip
+   ssh root@173.212.248.71
    ```
 
 2. **Proje dizinine gidin:**
@@ -193,7 +179,7 @@ Sadece **yeni MAUG dosyaları eklenir**.
 
 ```bash
 # Local'den VPS'ye PDF kopyalama
-scp data/MAUG_2_20221214_EBOOK.pdf root@your-vps-ip:/root/immunotherapy-api/data/
+scp data/MAUG_2_20221214_EBOOK.pdf root@173.212.248.71:/root/immunotherapy-api/data/
 ```
 
 ## 🆘 Sorun Giderme
@@ -202,7 +188,7 @@ scp data/MAUG_2_20221214_EBOOK.pdf root@your-vps-ip:/root/immunotherapy-api/data
 
 ```bash
 # SSH key kontrolü
-ssh root@your-vps-ip
+ssh root@173.212.248.71
 
 # Eğer çalışmıyorsa, şifre ile bağlanın
 ssh -o PreferredAuthentications=password root@your-vps-ip

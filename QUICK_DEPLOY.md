@@ -4,21 +4,15 @@
 
 ### Linux/Mac:
 ```bash
-# 1. VPS IP'sini düzenle
-nano deploy_to_vps.sh
-# VPS_HOST='185.123.45.67' gibi düzenleyin
-
-# 2. Çalıştır
+# IP zaten ayarlanmış: 173.212.248.71
+# Doğrudan çalıştırın:
 ./deploy_to_vps.sh
 ```
 
 ### Windows:
 ```batch
-REM 1. VPS IP'sini düzenle
-notepad deploy_to_vps.bat
-REM set VPS_HOST=185.123.45.67 gibi düzenleyin
-
-REM 2. Çalıştır
+REM IP zaten ayarlanmış: 173.212.248.71
+REM Doğrudan çalıştırın:
 deploy_to_vps.bat
 ```
 
@@ -28,7 +22,7 @@ deploy_to_vps.bat
 
 ### VPS'ye SSH ile Bağlan:
 ```bash
-ssh root@YOUR_VPS_IP
+ssh root@173.212.248.71
 cd /root/immunotherapy-api
 ```
 
@@ -99,7 +93,7 @@ Beklenen: 57 chunk Qdrant'ta
 
 ### SSH bağlanamıyor:
 ```bash
-ssh -v root@YOUR_VPS_IP  # Debug mode
+ssh -v root@173.212.248.71  # Debug mode
 ```
 
 ### Dosyalar yok:
@@ -111,7 +105,7 @@ git pull origin claude/pdf-chunking-embedding-setup-01JLGFuzhLw2pe4uf2SSJbm8
 ### PDF eksik:
 ```bash
 # Local'den VPS'ye kopyala
-scp data/MAUG_2_20221214_EBOOK.pdf root@YOUR_VPS_IP:/root/immunotherapy-api/data/
+scp data/MAUG_2_20221214_EBOOK.pdf root@173.212.248.71:/root/immunotherapy-api/data/
 ```
 
 ---
