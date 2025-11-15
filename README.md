@@ -80,22 +80,36 @@ cp /path/to/your/immunotherapy-book.pdf data/book.pdf
 
 ### 2. İndexleme İşlemini Başlatma
 
+**ÖNERİLEN: Akıllı İndexleme (TOC tabanlı)**
+
+```bash
+python index_book_smart.py
+```
+
+Bu script:
+- PDF bookmark/outline yapısını okur
+- Bookmark yoksa → İlk 20 sayfadan **1 kez** LLM ile TOC çıkarır
+- Sayfa → Chapter mapping oluşturur
+- **Chapter sınırlarında chunk'ı keser**
+- **Tablo/şekilleri bütün tutar**
+- Embedding oluşturur (text-embedding-3-small)
+- Qdrant'a kaydeder
+
+⏱️ **Süre**: 576 sayfa için ~5-10 dakika
+💰 **Maliyet**: ~$0.05-0.10 (sadece 1 LLM çağrısı)
+
+**Alternatif: Her Chunk için LLM Analizi (eski yöntem)**
+
 ```bash
 python index_book.py
 ```
 
-Bu script:
-- PDF'i sayfa sayfa okur
-- Her sayfayı 1000 token'lık chunk'lara böler
-- Her chunk için **GPT-4o-mini ile chapter/subsection tespit eder**
-- Embedding oluşturur (text-embedding-3-small)
-- Qdrant'a kaydeder
-
-⚠️ **Önemli**: Bu işlem uzun sürebilir (576 sayfa için ~30-60 dakika)
+⚠️ Daha yavaş (~45-60 dakika) ve daha maliyetli (~$3-5)
+📖 Detaylı karşılaştırma için: `COMPARISON.md`
 
 ### 3. İndexleme Ayarları
 
-`index_book.py` dosyasındaki parametreleri ihtiyacınıza göre değiştirebilirsiniz:
+Her iki script'te de parametreleri değiştirebilirsiniz:
 
 ```python
 CHUNK_SIZE = 1000       # Her chunk'ın token boyutu
@@ -181,14 +195,22 @@ curl -X POST "http://localhost:8000/api/query" \
 
 ## 🔍 Nasıl Çalışır?
 
-### 1. İndexleme Süreci
+### 1. İndexleme Süreci (Akıllı Yöntem)
 
 ```
-PDF → Sayfa Çıkarma → Chunking → Chapter Detection (GPT-4o-mini)
-                                        ↓
-                                  Embedding (OpenAI)
-                                        ↓
-                                  Qdrant'a Kayıt
+PDF → TOC Extraction (1 LLM çağrısı veya Bookmark okuma)
+          ↓
+    Chapter Mapping Oluştur (Sayfa → Chapter)
+          ↓
+    Sayfa Çıkarma + Akıllı Chunking
+          ↓
+    - Chapter boundary'de kır
+    - Tablo/şekil tespiti
+    - Overlap uygula
+          ↓
+    Embedding (OpenAI)
+          ↓
+    Qdrant'a Kayıt
 ```
 
 ### 2. Sorgu Süreci
@@ -197,18 +219,22 @@ PDF → Sayfa Çıkarma → Chunking → Chapter Detection (GPT-4o-mini)
 Kullanıcı Sorusu → Embedding → Vector Search (Qdrant)
                                       ↓
                               Top-K Benzer Chunk
+                              (Chapter bilgisi ile)
                                       ↓
                       Context + Soru → GPT-4o-mini → Cevap
 ```
 
 ## 📊 Özellikler
 
-✅ **Otomatik Chapter Detection**: Her chunk için GPT-4o-mini ile bölüm tespiti
+✅ **TOC-based Chapter Detection**: PDF bookmark veya 1 kez LLM ile TOC çıkarımı
+✅ **Chapter Boundary Awareness**: Chapter ortasında chunk kesme yok
+✅ **Table/Figure Protection**: Tablo ve şekiller bütün kalır
 ✅ **Overlap Chunking**: Bilgi kaybını önlemek için chunk'lar arası örtüşme
 ✅ **Semantic Search**: Vektör benzerliğine dayalı arama
 ✅ **Multi-language**: Türkçe ve İngilizce destek
 ✅ **Source Tracking**: Her cevap kaynak bilgileriyle gelir
 ✅ **Fast & Scalable**: Qdrant ile hızlı arama
+✅ **Cost Efficient**: %95 daha düşük indexleme maliyeti
 
 ## 🛠️ Troubleshooting
 
@@ -241,10 +267,12 @@ pip install httpx==0.27.0 --force-reinstall
 ## 📝 Geliştirme Notları
 
 - **Embedding Model**: `text-embedding-3-small` (1536 boyut)
-- **LLM Model**: `gpt-4o-mini` (hem chapter detection hem de response generation için)
+- **LLM Model**: `gpt-4o-mini` (TOC extraction ve response generation için)
 - **Vector Distance**: Cosine similarity
-- **Chunk Strategy**: Paragraph-based with token limit
-- **Rate Limiting**: OpenAI API için 0.5 saniye bekleme
+- **Chunk Strategy**: Chapter-aware, table-safe, paragraph-based with token limit
+- **Rate Limiting**: OpenAI API için 0.3 saniye bekleme
+- **TOC Extraction**: PDF bookmarks → LLM fallback → Page-based grouping
+- **Table Detection**: Pattern matching + structural analysis
 
 ## 🔐 Güvenlik
 
