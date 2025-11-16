@@ -20,7 +20,7 @@ load_dotenv()
 # Configuration
 COLLECTION_NAME = "maug"
 EMBEDDING_MODEL = "text-embedding-3-small"
-LLM_MODEL = "gpt-4o"  # En yeni ve güçlü model
+LLM_MODEL = "deepseek-reasoner"  # DeepSeek R1 (reasoning model)
 
 # Initialize FastAPI
 app = FastAPI(
@@ -39,7 +39,16 @@ app.add_middleware(
 )
 
 # Initialize clients
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# OpenAI client for embeddings
+openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# DeepSeek client for LLM (OpenAI-compatible API)
+deepseek_client = OpenAI(
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    base_url="https://api.deepseek.com"
+)
+
+# Qdrant client
 qdrant_client = QdrantClient(
     host=os.getenv("QDRANT_HOST", "localhost"),
     port=int(os.getenv("QDRANT_PORT", 6333))
@@ -124,8 +133,8 @@ async def query_immunotherapy(req: QueryRequest):
     start_time = time.time()
 
     try:
-        # 1. Embedding oluştur
-        emb_response = client.embeddings.create(
+        # 1. Embedding oluştur (OpenAI)
+        emb_response = openai_client.embeddings.create(
             model=EMBEDDING_MODEL,
             input=[req.question]
         )
@@ -184,7 +193,8 @@ Görevin doktorlara bilimsel kaynaklara dayalı karar destek sağlamaktır.
         else:
             system_prompt += "\n6. Respond in English"
 
-        completion = client.chat.completions.create(
+        # DeepSeek R1 ile cevap oluştur
+        completion = deepseek_client.chat.completions.create(
             model=LLM_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -198,7 +208,7 @@ Görevin doktorlara bilimsel kaynaklara dayalı karar destek sağlamaktır.
                 }
             ],
             temperature=0.3,
-            max_tokens=1500
+            max_tokens=2000  # DeepSeek R1 için artırıldı
         )
 
         answer = completion.choices[0].message.content
