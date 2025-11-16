@@ -20,7 +20,7 @@ load_dotenv()
 # Configuration
 COLLECTION_NAME = "maug"
 EMBEDDING_MODEL = "text-embedding-3-small"
-LLM_MODEL = "deepseek-reasoner"  # DeepSeek R1 (reasoning model)
+LLM_MODEL = "gpt-4o-mini"  # Hızlı ve güvenilir model
 
 # Initialize FastAPI
 app = FastAPI(
@@ -39,14 +39,8 @@ app.add_middleware(
 )
 
 # Initialize clients
-# OpenAI client for embeddings
-openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-# DeepSeek client for LLM (OpenAI-compatible API)
-deepseek_client = OpenAI(
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
-    base_url="https://api.deepseek.com"
-)
+# OpenAI client (for both embeddings and LLM)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Qdrant client
 qdrant_client = QdrantClient(
@@ -59,8 +53,8 @@ qdrant_client = QdrantClient(
 class QueryRequest(BaseModel):
     question: str
     language: str = "tr"  # "tr" veya "en"
-    top_k: int = 5  # Kaç kaynak döndürülecek
-    score_threshold: float = 0.7  # Minimum benzerlik skoru
+    top_k: int = 3  # Kaç kaynak döndürülecek (hız için azaltıldı)
+    score_threshold: float = 0.4  # Minimum benzerlik skoru
 
 
 class SourceInfo(BaseModel):
@@ -133,8 +127,8 @@ async def query_immunotherapy(req: QueryRequest):
     start_time = time.time()
 
     try:
-        # 1. Embedding oluştur (OpenAI)
-        emb_response = openai_client.embeddings.create(
+        # 1. Embedding oluştur
+        emb_response = client.embeddings.create(
             model=EMBEDDING_MODEL,
             input=[req.question]
         )
@@ -193,8 +187,8 @@ Görevin doktorlara bilimsel kaynaklara dayalı karar destek sağlamaktır.
         else:
             system_prompt += "\n6. Respond in English"
 
-        # DeepSeek R1 ile cevap oluştur
-        completion = deepseek_client.chat.completions.create(
+        # LLM ile cevap oluştur
+        completion = client.chat.completions.create(
             model=LLM_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
@@ -208,7 +202,7 @@ Görevin doktorlara bilimsel kaynaklara dayalı karar destek sağlamaktır.
                 }
             ],
             temperature=0.3,
-            max_tokens=2000  # DeepSeek R1 için artırıldı
+            max_tokens=1500
         )
 
         answer = completion.choices[0].message.content
