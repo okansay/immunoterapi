@@ -20,7 +20,7 @@ load_dotenv()
 # Configuration
 COLLECTION_NAME = "maug"
 EMBEDDING_MODEL = "text-embedding-3-small"
-LLM_MODEL = "gpt-4o-mini"  # Hızlı ve güvenilir model
+LLM_MODEL = "gpt-4o"  # En güçlü model
 
 # Initialize FastAPI
 app = FastAPI(
@@ -53,7 +53,7 @@ qdrant_client = QdrantClient(
 class QueryRequest(BaseModel):
     question: str
     language: str = "tr"  # "tr" veya "en"
-    top_k: int = 3  # Kaç kaynak döndürülecek (hız için azaltıldı)
+    top_k: int = 5  # Kaç kaynak döndürülecek
     score_threshold: float = 0.4  # Minimum benzerlik skoru
 
 
