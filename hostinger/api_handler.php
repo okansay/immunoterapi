@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Backend API configuration
 define('BACKEND_URL', 'http://173.212.248.71:8000/api/query');
-define('TIMEOUT', 60); // 60 seconds timeout
+define('TIMEOUT', 180); // 180 seconds timeout (o1-preview için artırıldı)
 
 /**
  * Send request to FastAPI backend
