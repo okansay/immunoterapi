@@ -20,7 +20,7 @@ load_dotenv()
 # Configuration
 COLLECTION_NAME = "maug"
 EMBEDDING_MODEL = "text-embedding-3-small"
-LLM_MODEL = "o1-preview"  # Reasoning model (yavaş ama güçlü)
+LLM_MODEL = "gpt-5"  # En yeni GPT-5 model (Ağustos 2025)
 
 # Initialize FastAPI
 app = FastAPI(
@@ -170,11 +170,8 @@ async def query_immunotherapy(req: QueryRequest):
 
         context = "\n\n---\n\n".join(context_parts)
 
-        # 4. LLM ile cevap oluştur (o1-preview formatı)
-        # o1 modelleri system prompt desteklemiyor, tüm prompt user mesajında olmalı
-        language_instruction = "Cevabı Türkçe ver." if req.language == "tr" else "Respond in English."
-
-        user_prompt = f"""Sen immünoterapi konusunda uzman bir tıbbi asistansın.
+        # 4. LLM ile cevap oluştur (GPT-5 standard formatı)
+        system_prompt = """Sen immünoterapi konusunda uzman bir tıbbi asistansın.
 Görevin doktorlara bilimsel kaynaklara dayalı karar destek sağlamaktır.
 
 ÖNEMLİ KURALLAR:
@@ -183,29 +180,29 @@ Görevin doktorlara bilimsel kaynaklara dayalı karar destek sağlamaktır.
 3. Emin olmadığın konularda bunu açıkça belirt
 4. Gerekirse kaynak numaralarına referans ver (örn: "Kaynak 1'e göre...")
 5. Tıbbi önerilerde bulunurken dikkatli ol, sadece bilgilendirici ol
-6. {language_instruction}
+"""
 
-{'=' * 80}
+        if req.language == "tr":
+            system_prompt += "\n6. Cevapları Türkçe ver"
+        else:
+            system_prompt += "\n6. Respond in English"
 
-Kaynak bilgiler:
-
-{context}
-
-{'=' * 80}
-
-Soru: {req.question}
-
-Lütfen yukarıdaki kaynaklara dayanarak detaylı ve bilimsel bir cevap ver."""
-
-        # o1-preview ile cevap oluştur (system prompt yok, temperature yok)
+        # GPT-5 ile cevap oluştur
         completion = client.chat.completions.create(
             model=LLM_MODEL,
             messages=[
+                {"role": "system", "content": system_prompt},
                 {
                     "role": "user",
-                    "content": user_prompt
+                    "content": (
+                        f"Kaynak bilgiler:\n\n{context}\n\n"
+                        f"{'=' * 80}\n\n"
+                        f"Soru: {req.question}"
+                    )
                 }
-            ]
+            ],
+            temperature=0.3,
+            max_tokens=2000
         )
 
         answer = completion.choices[0].message.content
