@@ -18,9 +18,9 @@ from qdrant_client import QdrantClient
 load_dotenv()
 
 # Configuration
-COLLECTION_NAME = "immunotherapy"
+COLLECTION_NAME = "maug"
 EMBEDDING_MODEL = "text-embedding-3-small"
-LLM_MODEL = "gpt-4o-mini"
+LLM_MODEL = "gpt-4o"  # En güçlü erişilebilir model
 
 # Initialize FastAPI
 app = FastAPI(
@@ -39,7 +39,10 @@ app.add_middleware(
 )
 
 # Initialize clients
+# OpenAI client (for both embeddings and LLM)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# Qdrant client
 qdrant_client = QdrantClient(
     host=os.getenv("QDRANT_HOST", "localhost"),
     port=int(os.getenv("QDRANT_PORT", 6333))
@@ -51,7 +54,7 @@ class QueryRequest(BaseModel):
     question: str
     language: str = "tr"  # "tr" veya "en"
     top_k: int = 5  # Kaç kaynak döndürülecek
-    score_threshold: float = 0.7  # Minimum benzerlik skoru
+    score_threshold: float = 0.4  # Minimum benzerlik skoru
 
 
 class SourceInfo(BaseModel):
@@ -167,7 +170,7 @@ async def query_immunotherapy(req: QueryRequest):
 
         context = "\n\n---\n\n".join(context_parts)
 
-        # 4. LLM ile cevap oluştur
+        # 4. LLM ile cevap oluştur (GPT-5 standard formatı)
         system_prompt = """Sen immünoterapi konusunda uzman bir tıbbi asistansın.
 Görevin doktorlara bilimsel kaynaklara dayalı karar destek sağlamaktır.
 
@@ -184,6 +187,7 @@ Görevin doktorlara bilimsel kaynaklara dayalı karar destek sağlamaktır.
         else:
             system_prompt += "\n6. Respond in English"
 
+        # GPT-5 ile cevap oluştur
         completion = client.chat.completions.create(
             model=LLM_MODEL,
             messages=[
@@ -198,7 +202,7 @@ Görevin doktorlara bilimsel kaynaklara dayalı karar destek sağlamaktır.
                 }
             ],
             temperature=0.3,
-            max_tokens=1500
+            max_tokens=2000
         )
 
         answer = completion.choices[0].message.content
